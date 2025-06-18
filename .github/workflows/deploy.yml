@@ -78,4 +78,4 @@ jobs:
     - name: Run Ansible Playbook
       run: |
         cd ansible
-        ansible-playbook -i inventory kube.yml
+        sudo ansible-playbook -i inventory kube.yml
