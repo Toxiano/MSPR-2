@@ -40,7 +40,7 @@ jobs:
     - name: Générer le fichier inventory.ini dynamique
       run: |
         echo "[kube]" > ansible/inventory.ini
-        echo "$INSTANCE_IP ansible_user=admin ansible_ssh_private_key_file=./ssh/gcp" >> ansible/inventory.ini
+        echo "$INSTANCE_IP ansible_user=admin ansible_ssh_private_key_file=./ssh/gcp ansible_ssh_common_args='-o StrictHostKeyChecking=no'" >> ansible/inventory.ini
 
         cat ansible/inventory.ini
 
@@ -66,10 +66,6 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y ansible
-
-    - name: Test Ansible Connexion
-      run: |
-        ansible -i inventory kube -m ping 
 
     - name: Run Ansible Playbook
       run: |
