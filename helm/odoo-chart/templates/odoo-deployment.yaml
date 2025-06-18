@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: odoo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: odoo
+  template:
+    metadata:
+      labels:
+        app: odoo
+    spec:
+      containers:
+        - name: odoo
+          image: {{ .Values.odoo.image }}
+          args: ["-i", "base"]
+          env:
+            - name: HOST
+              value: postgres
+            - name: USER
+              value: {{ .Values.postgres.user }}
+            - name: PASSWORD
+              value: {{ .Values.postgres.password }}
+          ports:
+            - containerPort: {{ .Values.odoo.port }}
+          volumeMounts:
+            - name: odoo-data
+              mountPath: /var/lib/odoo
+      volumes:
+        - name: odoo-data
+          persistentVolumeClaim:
+            claimName: odoo-pvc
+      

@@ -1,0 +1,17 @@
+{
+  "builders": [
+    {
+      "type": "googlecompute",
+      "project_id": "{{user `project_id`}}",
+      "source_image_family": "debian-12",
+      "ssh_username": "packer",
+      "zone": "europe-west9-a"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "script": "./provisioners/scripts/linux/install_mspr.sh"
+    }
+  ]
+}

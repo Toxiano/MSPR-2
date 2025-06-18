@@ -1,0 +1,18 @@
+odoo:
+  image: odoo:15
+  username: admin
+  password: admin
+  port: 8069
+  storage: 10Gi
+
+postgres:
+  image: postgres:13
+  user: odoo
+  password: odoo
+  db: postgres
+  port: 5432
+  storage: 10Gi
+
+ingress:
+  enabled: true
+  host: odoo.local

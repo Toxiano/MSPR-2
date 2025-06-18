@@ -1,0 +1,6 @@
+---
+- name: install kube
+  hosts: kube
+  become: yes
+  roles:
+    - kube

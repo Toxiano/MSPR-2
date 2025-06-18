@@ -1,0 +1,53 @@
+name: Deploy Infra + Config
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v3
+
+    - name: Terraform Init
+      working-directory: ./terraform
+      run: terraform init
+
+    - name: Terraform Apply
+      working-directory: ./terraform
+      run: terraform apply -auto-approve
+
+    - name: Get IP from Terraform output
+      id: get_ip
+      working-directory: ./terraform
+      run: |
+        echo "INSTANCE_IP=$(terraform output -raw instance_ip)" >> $GITHUB_ENV
+
+    - name: Récupérer la clé privée depuis les secrets
+      run: |
+        mkdir -p ssh
+        echo "${{ secrets.GCP_SSH_KEY }}" > ssh/gcp
+        chmod 600 ssh/gcp
+
+    - name: Générer le fichier inventory.ini dynamique
+      run: |
+        echo "[kube]" > ansible/inventory.ini
+        echo "$INSTANCE_IP ansible_user=admin ansible_ssh_private_key_file=./ssh/gcp" >> ansible/inventory.ini
+
+    - name: Set up Python and Ansible
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ansible
+
+    - name: Run Ansible Playbook
+      run: |
+        ansible-playbook -i ansible/inventory.ini ansible/playbook.yml

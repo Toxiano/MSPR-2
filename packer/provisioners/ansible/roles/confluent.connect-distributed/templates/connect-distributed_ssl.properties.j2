@@ -1,0 +1,36 @@
+
+#SSL additions
+ssl.truststore.location=/var/ssl/private/kafka.client.truststore.jks
+ssl.truststore.password=REPLACEME
+ssl.keystore.location=/var/ssl/private/kafka.client.keystore.jks
+ssl.keystore.password=REPLACEME
+ssl.key.password=REPLACEME
+security.protocol=SSL
+producer.ssl.truststore.location=/var/ssl/private/kafka.client.truststore.jks
+producer.ssl.truststore.password=REPLACEME
+producer.ssl.keystore.location=/var/ssl/private/kafka.client.keystore.jks
+producer.ssl.keystore.password=REPLACEME
+producer.ssl.key.password=REPLACEME
+producer.security.protocol=SSL
+consumer.ssl.truststore.location=/var/ssl/private/kafka.client.truststore.jks
+consumer.ssl.truststore.password=REPLACEME
+consumer.ssl.keystore.location=/var/ssl/private/kafka.client.keystore.jks
+consumer.ssl.keystore.password=REPLACEME
+consumer.ssl.key.password=REPLACEME
+consumer.security.protocol=SSL
+producer.confluent.monitoring.interceptor.ssl.truststore.location=/var/ssl/private/kafka.client.truststore.jks
+producer.confluent.monitoring.interceptor.ssl.truststore.password=REPLACEME
+producer.confluent.monitoring.interceptor.ssl.keystore.location=/var/ssl/private/kafka.client.keystore.jks
+producer.confluent.monitoring.interceptor.ssl.keystore.password=REPLACEME
+producer.confluent.monitoring.interceptor.ssl.key.password=REPLACEME
+producer.confluent.monitoring.interceptor.security.protocol=SSL
+consumer.confluent.monitoring.interceptor.ssl.truststore.location=/var/ssl/private/kafka.client.truststore.jks
+consumer.confluent.monitoring.interceptor.ssl.truststore.password=REPLACEME
+consumer.confluent.monitoring.interceptor.ssl.keystore.location=/var/ssl/private/kafka.client.keystore.jks
+consumer.confluent.monitoring.interceptor.ssl.keystore.password=REPLACEME
+consumer.confluent.monitoring.interceptor.ssl.key.password=REPLACEME
+consumer.confluent.monitoring.interceptor.security.protocol=SSL
+
+{% for key, value in kafka.connect.distributed.config.items() %}
+{{key}}={{value}}
+{% endfor %}
