@@ -1,8 +1,7 @@
 name: Deploy Infra + Config
 
-on:
-  push:
-    branches: [ main ]
+on: 
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -48,6 +47,10 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y ansible
 
+    - name: Test Ansible Connexion
+      run: |
+        ansible -i inventory kube -m ping 
+
     - name: Run Ansible Playbook
       run: |
-        ansible-playbook -i ansible/inventory.ini ansible/playbook.yml
+        ansible-playbook -i inventory kube.yml
