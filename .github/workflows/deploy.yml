@@ -40,8 +40,7 @@ jobs:
     - name: Générer le fichier inventory.ini dynamique
       run: |
         echo "[kube]" > ansible/inventory.ini
-        echo "$INSTANCE_IP ansible_user=admin ansible_ssh_private_key_file=./ssh/gcp ansible_ssh_common_args='-o StrictHostKeyChecking=no'" >> ansible/inventory.ini
-
+        echo "$INSTANCE_IP ansible_user=admin ansible_ssh_private_key_file=$(pwd)/ssh/gcp ansible_ssh_common_args='-o StrictHostKeyChecking=no'" >> ansible/inventory.ini
         cat ansible/inventory.ini
 
     - uses: actions/upload-artifact@v4
@@ -65,8 +64,8 @@ jobs:
     - name: Récupérer la clé privée depuis les secrets
       run: |
         mkdir -p ssh
-        echo "${{ secrets.GCP_SSH_KEY }}" > ssh/gcp
-        chmod 600 ssh/gcp
+        echo "${{ secrets.GCP_SSH_KEY }}" > ./ssh/gcp
+        chmod 600 ./ssh/gcp
 
     - name: Set up Python and Ansible
       run: |
