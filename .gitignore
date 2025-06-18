@@ -1,2 +1,3 @@
 ./ssh/gcp
+./ssh/gcp-deploy-key
 ./terraform/.terraform
