@@ -30,15 +30,22 @@ jobs:
       working-directory: ./terraform
       run: |
         echo "INSTANCE_IP=$(terraform output -raw instance_ip)" >> $GITHUB_ENV
-        echo "[kube]" > ansible/inventory.ini
-        echo "$(terraform output -raw instance_ip) ansible_user=admin ansible_ssh_private_key_file=$(pwd)/ssh/gcp-deploy-key ansible_ssh_common_args='-o StrictHostKeyChecking=no'" >> ansible/inventory.ini
-        cat ansible/inventory.ini
+        ls
+        echo "[kube]" > ../ansible/inventory.ini
+        echo "$(terraform output -raw instance_ip) ansible_user=admin ansible_ssh_private_key_file=$(pwd)/ssh/gcp-deploy-key ansible_ssh_common_args='-o StrictHostKeyChecking=no'" >> ../ansible/inventory.ini
+        cat ../ansible/inventory.ini
 
     - name: Récupérer la clé privée depuis les secrets
       run: |
         mkdir -p ssh
         echo "${{ secrets.GCP_SSH_KEY }}" > ssh/gcp-deploy-key
         chmod 600 ssh/gcp-deploy-key
+
+    - uses: actions/upload-artifact@v4More actions
+      with:
+        name: ansible
+        path: ansible/inventory.ini
+
 
   Ansible:
     runs-on: ubuntu-latest
@@ -49,7 +56,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-
+    - uses: actions/download-artifact@v4More actions
+      with:
+        name: ansible
 
     - name: Récupérer la clé privée depuis les secrets
       run: |
