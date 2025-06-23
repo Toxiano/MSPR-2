@@ -41,7 +41,7 @@ jobs:
         echo "${{ secrets.GCP_SSH_KEY }}" > ssh/gcp-deploy-key
         chmod 600 ssh/gcp-deploy-key
 
-    - uses: actions/upload-artifact@v4More actions
+    - uses: actions/upload-artifact@v4
       with:
         name: ansible
         path: ansible/inventory.ini
@@ -56,7 +56,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - uses: actions/download-artifact@v4More actions
+    - uses: actions/download-artifact@v4
       with:
         name: ansible
 
