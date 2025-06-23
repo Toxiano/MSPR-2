@@ -30,7 +30,9 @@ jobs:
       working-directory: ./terraform
       run: |
         echo "INSTANCE_IP=$(terraform output -raw instance_ip)" >> $GITHUB_ENV
-        env
+        echo "[kube]" > ansible/inventory.ini
+        echo "$(terraform output -raw instance_ip) ansible_user=admin ansible_ssh_private_key_file=$(pwd)/ssh/gcp-deploy-key ansible_ssh_common_args='-o StrictHostKeyChecking=no'" >> ansible/inventory.ini
+        cat ansible/inventory.ini
 
     - name: Récupérer la clé privée depuis les secrets
       run: |
@@ -47,17 +49,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Get Public IP
-      id: publicip
-      run: |
-        response=$(wget -qO- canhazip.com)
-        echo "ip='$response'" >> "$GITHUB_OUTPUT"
 
-    - name: Générer le fichier inventory.ini dynamique
-      run: |
-        echo "[kube]" > ansible/inventory.ini
-        echo "${{ steps.publicip.outputs.ip }} ansible_user=admin ansible_ssh_private_key_file=$(pwd)/ssh/gcp-deploy-key ansible_ssh_common_args='-o StrictHostKeyChecking=no'" >> ansible/inventory.ini
-        cat ansible/inventory.ini
 
     - name: Récupérer la clé privée depuis les secrets
       run: |
