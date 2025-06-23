@@ -30,6 +30,7 @@ jobs:
       working-directory: ./terraform
       run: |
         echo "INSTANCE_IP=$(terraform output -raw instance_ip)" >> $GITHUB_ENV
+        env
 
     - name: Récupérer la clé privée depuis les secrets
       run: |
