@@ -72,9 +72,10 @@ jobs:
         sudo apt-get install -y ansible
 
     - name: Wait for the instance to be ready
-      run: sleep 30
+      run: sleep 15
 
     - name: Run Ansible Playbook
       run: |
+        ls
         cd ansible
         sudo ansible-playbook -i inventory kube.yml
