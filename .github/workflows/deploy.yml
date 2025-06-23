@@ -75,6 +75,8 @@ jobs:
 
     - name: Run Ansible Playbook
       run: |
-        cp inventory.ini ansible/inventory.ini
+        cp inventory.ini ansible/inventory -f
+        ls ansible
+        cat ansible/inventory
         cd ansible
         sudo ansible-playbook -i inventory kube.yml
