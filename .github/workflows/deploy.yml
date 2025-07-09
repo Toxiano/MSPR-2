@@ -97,10 +97,10 @@ jobs:
         name: admin-conf
 
     - name: Get Public IP
-        id: publicip
-        run: |
-          response=$(wget -qO- canhazip.com)
-          echo "ip='$response'" >> "$GITHUB_OUTPUT"
+      id: publicip
+      run: |
+        response=$(wget -qO- canhazip.com)
+        echo "ip='$response'" >> "$GITHUB_OUTPUT"
 
     - name: Config kubectl
       run: |
