@@ -34,12 +34,19 @@ jobs:
         echo "[kube]" > ../ansible/inventory.ini
         echo "$(terraform output -raw instance_ip) ansible_user=admin ansible_ssh_private_key_file=ssh/gcp-deploy-key ansible_ssh_common_args='-o StrictHostKeyChecking=no'" >> ../ansible/inventory.ini
         cat ../ansible/inventory.ini
+        sed 's/SET_IP_HERE/'$(terraform output -raw instance_ip)'/g' ../config/admin.conf > ../admin-config
+        echo "$(cat ../admin-config)"
 
     - name: Récupérer la clé privée depuis les secrets
       run: |
         mkdir -p ssh
         echo "${{ secrets.GCP_SSH_KEY }}" > ssh/gcp-deploy-key
         chmod 600 ssh/gcp-deploy-key
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: admin-config
+        path: admin-config
 
     - uses: actions/upload-artifact@v4
       with:
@@ -78,3 +85,27 @@ jobs:
         cp inventory.ini ansible/inventory -f
         cd ansible
         sudo ansible-playbook -i inventory kube.yml
+
+  Helm:
+    runs-on: ubuntu-latest
+    needs: [Terraform, Ansible]
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/download-artifact@v4
+      with:
+        name: admin-conf
+
+    - name: Get Public IP
+        id: publicip
+        run: |
+          response=$(wget -qO- canhazip.com)
+          echo "ip='$response'" >> "$GITHUB_OUTPUT"
+
+    - name: Config kubectl
+      run: |
+        mv admin-config /etc/kubernetes/admin.conf && chmod 600 /etc/kubernetes/admin.conf
+        KUBECONFIG="/etc/kubernetes/admin.conf"
+        export KUBECONFIG="/etc/kubernetes/admin.conf"
+        kubectl config view
+        kubectl get nodes
